@@ -29,7 +29,7 @@
 }
 .top{
   top: 10;
-  background-color: #2c3e50;
+  background-color: #6C757D;
 }
 
 

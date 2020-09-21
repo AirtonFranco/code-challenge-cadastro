@@ -1,6 +1,6 @@
 <template>
 	<div id="app" class="container">
-		<h1>MEDPREV</h1>
+		<h1>TELA DE CADASTRO</h1>
         <b-card no-body>
     <b-tabs card>
       <b-tab title="CADASTRO CPF" active>

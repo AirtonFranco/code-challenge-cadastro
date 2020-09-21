@@ -30,13 +30,12 @@
           placeholder="Informe seu Email"
         ></b-form-input>
       </b-form-group>
-      <b-form-group label="CEP*">
-        <the-mask
-          :mask="['##.###.###']"
+      <b-form-group label="Endereco*">
+        <b-form-input
           class="form-control display-7"
-          v-model="usuario.cep"
-          placeholder="Informe seu CEP"
-        />
+          v-model="usuario.address"
+          placeholder="Informe seu Endereço"
+        ></b-form-input>
       </b-form-group>
       <b-button @click="getLocation" size="lg" variant="primary">Carregar Mapa</b-button>
       <hr />
@@ -61,7 +60,7 @@ export default {
         cnpj: "", //Obrigatorio
         cnpj: "",
         email: "",
-        cep: "",
+        address: "",
       },
     };
   },
@@ -82,34 +81,45 @@ export default {
       this.usuario.img = target.files[0];
     },
     getLocation() {
-      if(navigator.geolocation){
-		  navigator.geolocation.getCurrentPosition(position => {
-			  console.log(position.coords.latitude);
-			  console.log(position.coords.longitude);
-		  })
-	  }
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            this.getAddressFrom(
+              position.coords.latitude,
+              position.coords.longitude
+            );
+            // console.log(position.coords.latitude);
+            // console.log(position.coords.longitude);
+          },
+          (error) => {
+            console.log(error.message);
+          }
+        );
+      } else {
+        console.log("Browser nao suporta");
+      }
     },
-    // getCarregarEndereco(lat, long) {
-    //   axios
-    //     .get(
-    //       "http://maps.googleapis.com/maps/api/geocode/json?latlng=" +
-    //         lat +
-    //         "," +
-    //         long +
-    //         "&key=yourkey"
-    //     )
-    //     .then((response) => {
-	// 		if(response.data.error_messsage){
-	// 			console.log(response.data.error_messsage);
-	// 		} else {
-	// 			console.log(response.data.results[0].formatted_adress);
-	// 		}
-	// 	})
-    //     .catch((error) => {
-    //       console.log(error.message);
-    //     });
-    // },
-
+    getAddressFrom(lat, long) {
+      axios
+        .get(
+          "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
+            lat +
+            "," +
+            long +
+            "&key=AIzaSyC4ytUWVC5tXOiiqhP56ZbWYtI99ntONn4"
+        )
+        .then((response) => {
+          if (response.data.error_message) {
+            console.log(response.data.error_message);
+          } else {
+            // this.address = response.data.results[0].formatted_address;
+            console.log(response.data.results[0].formatted_address);
+          }
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    },
     //Adicionando usuarios - Metodo POST
     salvar() {
       const metodo = this.id ? "patch" : "post";
