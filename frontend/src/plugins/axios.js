@@ -6,7 +6,7 @@ import axios from 'axios'
 Vue.use({
     install(Vue) {
         Vue.prototype.$http = axios.create({
-            baseURL: 'https://jsonbox.io/box_988db55c0b89307b871e/'
+            baseURL: 'http://localhost:3001'
         })
         //Interceptar o metodo que esta sendo enviado
         // Vue.prototype.$http.interceptors.request.use(config => {
@@ -15,3 +15,5 @@ Vue.use({
         // })
     }
 })
+
+// API KEY MAPS = AIzaSyC4ytUWVC5tXOiiqhP56ZbWYtI99ntONn4

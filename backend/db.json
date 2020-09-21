@@ -1,0 +1,27 @@
+{
+  "usuarios": [
+    {
+      "id": 1,
+      "nome": "Airton",
+      "cpf": 999999999,
+      "cnpj": 222222222,
+      "email": "airton.francosilveira@gmail.com",
+      "cep": 69999999
+    },
+    {
+      "id": 2,
+      "nome": "Airton2",
+      "cpf": 999999999,
+      "cnpj": 222222222,
+      "email": "airton.francosilveira@gmail.com",
+      "cep": 69999999
+    },
+    {
+      "nome": "",
+      "cnpj": "",
+      "email": "",
+      "cep": "",
+      "id": 3
+    }
+  ]
+}

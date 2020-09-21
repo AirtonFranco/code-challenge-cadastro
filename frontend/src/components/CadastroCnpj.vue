@@ -1,186 +1,145 @@
 <template>
-	<div id="app" class="container">
-		<b-alert show dismissible v-for="mensagem in mensagens"
-		:key="mensagem.texto"
-		:variant="mensagem.tipo">{{mensagem.texto}}</b-alert>
-		<b-card>
-			<b-form-group label="Nome*">
-				<b-form-input type="text" size='lg'
-				v-model="usuario.nome"
-				placeholder="Informe seu Nome">
+  <div id="app" class="container">
+    <b-alert
+      show
+      dismissible
+      v-for="mensagem in mensagens"
+      :key="mensagem.texto"
+      :variant="mensagem.tipo"
+    >{{mensagem.texto}}</b-alert>
+    <b-card>
+      <b-form-group label="Nome*">
+        <b-form-input type="text" size="lg" v-model="usuario.nome" placeholder="Informe seu Nome"></b-form-input>
+      </b-form-group>
 
-				</b-form-input>
-			</b-form-group>
-            <b-form-group label="Razao Social*">
-				<b-form-input type="text" size='lg'
-				v-model="usuario.razao"
-				placeholder="Informe seu Nome">
-
-				</b-form-input>
-			</b-form-group>
-            <b-form-group label="CNPJ*">
-				<the-mask :mask="['##.###.###/####-##']" class="form-control display-7"
-                v-model="usuario.cpf"
-				placeholder="Informe seu CNPJ"/>
-
-			</b-form-group>
-			<b-form-group label="Email" 
-            id="input-group-1"
-            label-for="input-1"
-            description="Os campos com * são obrigatorios.">
-				<b-form-input type="email" size='lg'
-                id="input-1"
-				v-model="usuario.email" required="required"
-				placeholder="Informe seu Email">
-
-				</b-form-input>
-                <b-form-group label="Numero de telefone">
-				<the-mask :mask="['(##) ####-####']" class="form-control display-7"
-                v-model="usuario.telefone"
-				placeholder="Informe seu numero de telefone"/>
-
-			</b-form-group>
-            <b-form-group label="Numero de Celular">
-				<the-mask :mask="['(##) #####-####']" class="form-control display-7"
-                v-model="usuario.celular"
-				placeholder="Informe seu numero de celular"/>
-
-			</b-form-group>
-            <div class="form-group col-12 flex-column d-flex align-items-center">
-                <input type="file" class="d-none"
-                ref="input"
-                accept="image/*"
-                @change="handleFile($event)">
-                <button type="button" 
-                class="btn btn-secondary w-50"
-                @click="openFileDialog()"> Adicione sua Foto</button>
-                <div v-if="usuario.img" class="mt-2">
-                    {{usuario.img.name}}
-                </div>
-            </div>
-			</b-form-group>
-			<hr>
-			<b-button @click="salvar"
-			size="lg" variant="primary">Salvar</b-button>
-			<b-button @click="obterUsuarios"
-			size="lg" variant="success" class="ml-2">Obter Usuarios</b-button>
-		</b-card>
-		<hr>
-		<b-list-group>
-			<b-list-group-item v-for="(usuario, id) in usuarios" :key="id">
-				<strong>Nome: </strong> {{usuario.nome}} <br/>
-                <strong>CNPJ: </strong> {{usuario.cnpj}} <br/>
-                <strong>RAZÃO SOCIAL: </strong> {{usuario.razao}} <br/>
-                <strong>EMAIL: </strong> {{usuario.email}} <br/>
-				<strong>TELEFONE: </strong> {{usuario.telefone}} <br/>
-                <strong>CELULAR: </strong> {{usuario.celular}} <br/>
-                <strong>IMAGEM: </strong> {{usuario.img}} <br/>
-				<strong>ID: </strong> {{id}} <br/>
-				<b-button variant="warning" size="lg"
-				@click="carregar(id)">Editar</b-button>
-				<b-button variant="danger" size="lg"
-				class="ml-2" @click="excluir(id)">Excluir</b-button>
-			</b-list-group-item>
-		</b-list-group>
-	</div>
+      <b-form-group label="CNPJ*">
+        <the-mask
+          :mask="['##.###.###/####-##']"
+          class="form-control display-7"
+          v-model="usuario.cnpj"
+          placeholder="Informe seu CNPJ"
+        />
+      </b-form-group>
+      <b-form-group label="Email" id="input-group-1" label-for="input-1">
+        <b-form-input
+          type="email"
+          size="lg"
+          id="input-1"
+          v-model="usuario.email"
+          required="required"
+          placeholder="Informe seu Email"
+        ></b-form-input>
+      </b-form-group>
+      <b-form-group label="CEP*">
+        <the-mask
+          :mask="['##.###.###']"
+          class="form-control display-7"
+          v-model="usuario.cep"
+          placeholder="Informe seu CEP"
+        />
+      </b-form-group>
+      <b-button @click="getLocation" size="lg" variant="primary">Carregar Mapa</b-button>
+      <hr />
+      <b-button @click="salvar" size="lg" variant="success">Enviar</b-button>
+    </b-card>
+    <hr />
+  </div>
 </template>
 
 <script>
-import axios from 'axios'
-import {TheMask} from 'vue-the-mask';
+import axios from "axios";
+import { TheMask } from "vue-the-mask";
 export default {
-    components: {TheMask},
-	data() {
-		return {
-			mensagens: [],
-			usuarios: [],
-			id: null,
-			usuario: {
-				nome: '', //Obrigatorio
-                cnpj: '', //Obrigatorio
-                razao: '',
-				email: '',
-				telefone: '',
-                celular: '',
-                img: ''
-			}
-		}
-	},
-	methods: {
-		limpar() {
-			this.usuario.nome = '',
-            this.usuario.cnpj = '',
-            this.usuario.razao = '',
-            this.usuario.email = '',
-            this.usuario.telefone = '',
-            this.usuario.celular = '',
-            this.usuario.img = '',
-			this.id = null
-			this.mensagens = []
-        },
-        openFileDialog() {
-            this.$refs.input.value = null
-            this.$refs.input.click()
-        },
-        handleFile({target}) {
-            this.usuario.img = target.files[0]
-        },
-		carregar (id) {
-			this.id = id
-			this.usuario = { ...this.usuarios[id]}
-		},
-		excluir(id) {
-			this.$http.delete(`https://jsonbox.io/box_dc99498e98255239999c/usuarios/${id}.json`)
-			.then(() => {
-				this.limpar()
-				this.mensagens.push({
-					texto: 'Item excluido! clique em carregar para ver a lista',
-					tipo: 'danger'
-				})
-			})
-			.catch(err => {
-				this.mensagens.push({
-					texto: 'Problema para excluir!',
-					tipo: 'danger'
-				})
-			})
-		},
-		//Adicionando usuarios - Metodo POST
-		salvar() {
-			const metodo = this.id ? 'patch' : 'post'
-			const finalUrl = this.id ? `/${this.id}.json` : '.json'
-			this.$http[metodo](`https://jsonbox.io/box_dc99498e98255239999c/usuarios${finalUrl}`, this.usuario)
-			.then(() => {
-				this.limpar()
-				this.mensagens.push({
-					texto: 'Operação Realizada com sucesso! clique em carregar para ver a lista',
-					tipo: 'success'
-				})
-			})
-		},
-		//Editando usuarios - Metodo GET
-		//Posso tambem usar no lugar de usuarios.json o /usuarios
-		obterUsuarios() {
-			this.$http.get('https://jsonbox.io/box_dc99498e98255239999c/usuarios.json',).then(res => {
-				this.usuarios = res.data
-				
-			})
-		},
+  components: { TheMask },
+  data() {
+    return {
+      mensagens: [],
+      usuarios: [],
+      id: null,
+      usuario: {
+        nome: "", //Obrigatorio
+        cnpj: "", //Obrigatorio
+        cnpj: "",
+        email: "",
+        cep: "",
+      },
+    };
+  },
+  methods: {
+    limpar() {
+      (this.usuario.nome = ""),
+        (this.usuario.cnpj = ""),
+        (this.usuario.cep = ""),
+        (this.usuario.email = ""),
+        (this.id = null);
+      this.mensagens = [];
     },
-}
+    openFileDialog() {
+      this.$refs.input.value = null;
+      this.$refs.input.click();
+    },
+    handleFile({ target }) {
+      this.usuario.img = target.files[0];
+    },
+    getLocation() {
+      if(navigator.geolocation){
+		  navigator.geolocation.getCurrentPosition(position => {
+			  console.log(position.coords.latitude);
+			  console.log(position.coords.longitude);
+		  })
+	  }
+    },
+    // getCarregarEndereco(lat, long) {
+    //   axios
+    //     .get(
+    //       "http://maps.googleapis.com/maps/api/geocode/json?latlng=" +
+    //         lat +
+    //         "," +
+    //         long +
+    //         "&key=yourkey"
+    //     )
+    //     .then((response) => {
+	// 		if(response.data.error_messsage){
+	// 			console.log(response.data.error_messsage);
+	// 		} else {
+	// 			console.log(response.data.results[0].formatted_adress);
+	// 		}
+	// 	})
+    //     .catch((error) => {
+    //       console.log(error.message);
+    //     });
+    // },
+
+    //Adicionando usuarios - Metodo POST
+    salvar() {
+      const metodo = this.id ? "patch" : "post";
+      const finalUrl = this.id ? `/${this.id}` : "";
+      this.$http[metodo](
+        `http://localhost:3001/usuarios${finalUrl}`,
+        this.usuario
+      ).then(() => {
+        this.limpar();
+        this.mensagens.push({
+          texto: "Obrigado, cadastro realizado com sucesso",
+          tipo: "success",
+        });
+      });
+    },
+  },
+};
 </script>
 
 <style>
 #app {
-	font-family: 'Avenir', Helvetica, Arial, sans-serif;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	color: #2c3e50;
-	font-size: 1.5rem;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
+  font-size: 1.5rem;
 }
 
 #app h1 {
-	text-align: center;
-	margin: 50px;
+  text-align: center;
+  margin: 50px;
 }
 </style>
