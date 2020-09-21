@@ -1,4 +1,4 @@
-# crud-vue-mp
+# code-challenge-cadastro frontend
 
 ## Project setup
 ```
