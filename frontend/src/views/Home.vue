@@ -9,6 +9,8 @@
       </p>
       <hr>
       <p><strong>AIRTON SILVEIRA | FRONT-END DEVELOPER</strong></p>
+      <p><strong>Fone:</strong>(92) 991412237 <br>
+      <strong>email:</strong>airton.francosilveira@gmail.com</p>
     </b-jumbotron>
   </div>
 </template>
